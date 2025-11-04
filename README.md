@@ -31,3 +31,10 @@ Once you have initialized your project and added your content, run the following
 Now you can visit http://localhost:8080 and follow the WordPress installation steps. Any edits made to your new wp-content directory will instantly read by the container since we are using using a Docker persistent volume for the wp-content directory.
 
 Additionally any changes in the database will persist since the MySQL installation is also set up to use a persistent volume for its data storage.
+
+## Backup and Restore Scripts
+Two scripts are provided to backup and restore the database:
+- `backup-db.sh`: Creates a timestamped SQL dump of the exampledb database
+- `restore-db.sh <backup-file.sql>`: Restores a database from a previously created backup file
+
+To use these scripts, make sure Docker containers are running with `./start.sh` first.
