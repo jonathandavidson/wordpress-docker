@@ -9,6 +9,7 @@ services:
       - 8080:80
     environment:
       WORDPRESS_DB_HOST: db
+      user: $UID:$GID
       WORDPRESS_DB_USER: exampleuser
       WORDPRESS_DB_PASSWORD: examplepass
       WORDPRESS_DB_NAME: exampledb
