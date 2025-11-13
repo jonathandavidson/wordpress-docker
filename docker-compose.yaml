@@ -2,9 +2,26 @@ version: '3.1'
 
 services:
 
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - mysql:/var/lib/mysql
+    secrets:
+      - db_password
+    networks:
+      - app-network
+
   wordpress:
+    depends_on:
+      - mysql
     image: wordpress
-    restart: always
+    restart: unless-stopped
     ports:
       - 8080:80
     environment:
@@ -21,21 +38,12 @@ services:
       - ./wp-content:/var/www/html/wp-content
     secrets:
       - db_password
-
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
-    volumes:
-      - mysql:/var/lib/mysql
-    secrets:
-      - db_password
+    networks:
+      - app-network
 
   nginx:
+    depends_on:
+      - wordpress
     image: nginx:latest
     ports:
       - "80:80"
@@ -54,3 +62,7 @@ secrets:
 volumes:
   wp-content:
   mysql:
+
+networks:
+  app-network:
+    driver: bridge
