@@ -5,7 +5,7 @@
 # Set variables
 DB_NAME="wordpress"
 DB_USER="wordpress"
-DB_PASS=""
+DB_PASS=$(cat "./secrets/db_password.txt")
 BACKUP_DIR="./backups"
 
 # Check if backup file is provided as argument
