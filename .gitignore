@@ -1,4 +1,6 @@
+.env
 wp-content
 backups/
+secrets/
 nginx/certs/
 nginx/private/

@@ -8,25 +8,47 @@ services:
     ports:
       - 8080:80
     environment:
-      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_HOST: mysql
       user: $UID:$GID
-      WORDPRESS_DB_USER: exampleuser
-      WORDPRESS_DB_PASSWORD: examplepass
-      WORDPRESS_DB_NAME: exampledb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_SITEURL', 'https://${WORDPRESS_SITE_DOMAIN}');
+        define('WP_HOME', 'https://${WORDPRESS_SITE_DOMAIN}');
+        define('FORCE_SSL_ADMIN', true);
     volumes:
       - ./wp-content:/var/www/html/wp-content
+    secrets:
+      - db_password
 
-  db:
+  mysql:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: exampledb
-      MYSQL_USER: exampleuser
-      MYSQL_PASSWORD: examplepass
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
-      - db:/var/lib/mysql
+      - mysql:/var/lib/mysql
+    secrets:
+      - db_password
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs:/etc/ssl/certs
+      - ./nginx/private:/etc/ssl/private
+
+secrets:
+  db_password:
+    file: secrets/db_password.txt
 
 volumes:
-  wordpress:
-  db:
+  wp-content:
+  mysql:

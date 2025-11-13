@@ -3,9 +3,9 @@
 # Script to restore a database dump created by the backup-db.sh script
 
 # Set variables
-DB_NAME="exampledb"
-DB_USER="exampleuser"
-DB_PASS="examplepass"
+DB_NAME="wordpress"
+DB_USER="wordpress"
+DB_PASS=""
 BACKUP_DIR="./backups"
 
 # Check if backup file is provided as argument
@@ -26,8 +26,8 @@ fi
 
 # Restore the database
 echo "Restoring database $DB_NAME from $BACKUP_FILE..."
-echo "Running: docker-compose exec -T db mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$BACKUP_FILE""
-docker-compose exec -T db mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$BACKUP_FILE"
+echo "Running: docker-compose exec -T mysql mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$BACKUP_FILE""
+docker-compose exec -T mysql mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$BACKUP_FILE"
 
 # Check if restore was successful
 if [ $? -eq 0 ]; then
