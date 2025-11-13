@@ -40,8 +40,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - WORDPRESS_SITE_DOMAIN=${WORDPRESS_SITE_DOMAIN}
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/templates:/etc/nginx/templates
       - ./nginx/certs:/etc/ssl/certs
       - ./nginx/private:/etc/ssl/private
 
